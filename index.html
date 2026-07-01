@@ -327,49 +327,85 @@
         }
 
         function renderWeeklyTrendChart(trendData) {
-            destroyChart();
-            document.getElementById('chart-title').innerText = "Macro Volume Progression Trends";
-            document.getElementById('chart-subtitle').innerText = "Comparative operational history scaling over time";
+    destroyChart();
+    document.getElementById('chart-title').innerText = "Macro Volume Progression Trends";
+    document.getElementById('chart-subtitle').innerText = "Comparative operational history scaling over time";
 
-            const ctx = document.getElementById('canvas-analytics').getContext('2d');
+    const ctx = document.getElementById('canvas-analytics').getContext('2d');
 
-            currentChartInstance = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: trendData.map(t => t.date),
-                    datasets: [
-                        {
-                            label: 'Lines Processed',
-                            data: trendData.map(t => t.lines),
-                            borderColor: '#6366f1',
-                            backgroundColor: 'transparent',
-                            tension: 0.3,
-                            borderWidth: 3,
-                            pointRadius: 4
-                        },
-                        {
-                            label: 'Orders Fulfilled',
-                            data: trendData.map(t => t.orders),
-                            borderColor: '#3b82f6',
-                            backgroundColor: 'transparent',
-                            tension: 0.3,
-                            borderWidth: 2,
-                            borderDash: [4, 4],
-                            pointRadius: 3
-                        }
-                    ]
+    currentChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: trendData.map(t => t.date),
+            datasets: [
+                {
+                    label: 'Lines Processed',
+                    data: trendData.map(t => t.lines),
+                    borderColor: '#6366f1',
+                    backgroundColor: 'transparent',
+                    tension: 0.3,
+                    borderWidth: 3,
+                    pointRadius: 4,
+                    yAxisID: 'y' // Uses the left axis
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } } },
-                    scales: {
-                        y: { grid: { color: '#f1f5f9' }, border: { dash: [5, 5] } },
-                        x: { grid: { display: false } }
-                    }
+                {
+                    label: 'Orders Fulfilled',
+                    data: trendData.map(t => t.orders),
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'transparent',
+                    tension: 0.3,
+                    borderWidth: 2,
+                    borderDash: [4, 4],
+                    pointRadius: 3,
+                    yAxisID: 'y' // Uses the left axis
+                },
+                {
+                    label: 'Quantity Picked',
+                    data: trendData.map(t => t.picks),
+                    borderColor: '#f59e0b', // Amber theme accent
+                    backgroundColor: 'transparent',
+                    tension: 0.3,
+                    borderWidth: 2,
+                    pointRadius: 3,
+                    yAxisID: 'y1' // Uses the right axis
                 }
-            });
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { 
+                legend: { 
+                    position: 'top', 
+                    labels: { boxWidth: 12, font: { size: 11 } } 
+                } 
+            },
+            scales: {
+                // Left Axis configuration (Orders & Lines)
+                y: { 
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    grid: { color: '#f1f5f9' }, 
+                    border: { dash: [5, 5] },
+                    ticks: { color: '#475569' }
+                },
+                // Right Axis configuration (Picks)
+                y1: {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    ticks: { color: '#b45309' },
+                    // Turning off chart area grids prevents overlapping lines from crowding the visual field
+                    grid: { drawOnChartArea: false } 
+                },
+                x: { 
+                    grid: { display: false } 
+                }
+            }
         }
+    });
+}
     </script>
 </body>
 </html>
